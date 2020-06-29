@@ -4,14 +4,12 @@ project(sample_lib)
 
 include_directories(${CMAKE_SOURCE_DIR}/sources ${CMAKE_SOURCE_DIR}/includes)
 
-vcpkg_add_packages( sqlite3 fmt )
+vcpkg_add_packages(glfw3)
 
-find_package(sqlite3 CONFIG REQUIRED)
-find_package(fmt CONFIG REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(glfw3 3.3 REQUIRED)
 
-add_library(sample_writer sample_writer.cpp sqlite3_wrapper.cpp)
-add_library(sample_reader sample_reader.cpp sqlite3_wrapper.cpp)
+add_library(game_lib utility/window.cpp)
 
-target_link_libraries(sample_writer PRIVATE sqlite3)
-target_link_libraries(sample_reader PRIVATE sqlite3)
-target_link_libraries(sample_writer PRIVATE fmt::fmt fmt::fmt-header-only)
+target_link_libraries(game_lib ${OPENGL_LIBRARIES} glfw)
+
