@@ -9,7 +9,10 @@ vcpkg_add_packages(glfw3)
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 
-add_library(game_lib utility/window.cpp)
+aux_source_directory(utility UtilitySources)
+
+add_library(game_lib ${UtilitySources} glad/glad.c)
 
 target_link_libraries(game_lib ${OPENGL_LIBRARIES} glfw)
+
 

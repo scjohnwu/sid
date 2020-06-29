@@ -1,7 +1,7 @@
 #include "utility/window.h"
 
 int main(int arch, const char** argv) {
-   sid::CWindow window;
+   sid::Window window;
 
    window.Run();
 

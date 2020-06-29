@@ -1,8 +1,10 @@
 #include "window.h"
 
 namespace sid {
-void CWindow::Run() {
-  if (!glfwInit()) return;
+void Window::Run() {
+  if (!glfwInit()) {
+    return;
+  }
 
   m_Window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
   if (!m_Window) {
@@ -11,6 +13,10 @@ void CWindow::Run() {
   }
 
   glfwMakeContextCurrent(m_Window);
+
+  if (!OpenGLSupport::Init()) {
+    return;
+  }
 
   while (!glfwWindowShouldClose(m_Window)) {
     /* Render here */

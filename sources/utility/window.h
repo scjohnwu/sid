@@ -1,9 +1,12 @@
 #pragma once
 
+#include "opengl_support.h"
+
+// Must be included after all other opengl includes
 #include "GLFW/glfw3.h"
 
 namespace sid {
-class CWindow {
+class Window {
  public:
   void Run();
 
