@@ -1,33 +1,49 @@
+#include "glsl/program_builder.h"
 #include "utility/window.h"
 
 int main(int arch, const char** argv) {
-   sid::OpenGLSupport::LoadCore();
+    sid::OpenGLSupport::LoadCore();
 
-   sid::Window window(640, 480, "Shooting in the dark");
+    sid::Window window(640, 480, "Shooting in the dark");
 
-   if(!window.IsValid()) {
-      sid::OpenGLSupport::TerminateCore();
-      return -1;
-   }
+    if (!window.IsValid()) {
+        sid::OpenGLSupport::TerminateCore();
+        return -1;
+    }
 
-   if(!sid::OpenGLSupport::LoadExtensions()){
-      sid::OpenGLSupport::TerminateCore();
-      return -1;
-   }
+    if (!sid::OpenGLSupport::LoadExtensions()) {
+        sid::OpenGLSupport::TerminateCore();
+        return -1;
+    }
 
-   sid::OpenGLSupport::EnableVSync();
+    sid::OpenGLSupport::EnableVSync();
 
-   while(window.IsNotClosing()) {
-      glClearColor(1.0,0.0, 0.0, 1.0);
-      glClear(GL_COLOR_BUFFER_BIT);
-      glClear(GL_DEPTH_BUFFER_BIT);
+    sid::ProgramBuilder builder;
 
-      window.SwapBuffers();
+    auto simple_program = builder.NewProgram()
+                              .AddShader("simple_vertex.vs", sid::ShaderType::Vertex)
+                              .AddShader("simple_fragment.fs", sid::ShaderType::Fragment)
+                              .Build();
 
-      window.PollEvents();
-   }
+    // TODO:: move into class
+    GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
-   sid::OpenGLSupport::TerminateCore();
+    while (window.IsNotClosing()) {
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
-   return 0;
+        glPointSize(30.0f);
+        simple_program->Apply();
+        glDrawArrays(GL_POINTS, 0, 1);
+
+        window.SwapBuffers();
+        window.PollEvents();
+    }
+
+    sid::OpenGLSupport::TerminateCore();
+
+    return 0;
 }
