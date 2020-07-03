@@ -10,14 +10,15 @@
       "request": "launch",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,
       // In case of need to debug release adjust the suffix
       "windows": {
+        "cwd": "${workspaceFolder}/build/bin/Debug/",
         "program": "${workspaceFolder}/build/bin/Debug/${input:app_name}_x64_debug.exe",
       },
       "linux": {
+        "cwd": "${workspaceFolder}/build/bin/",
         "program": "${workspaceFolder}/build/bin/${input:app_name}_x64_debug",
       }
     },
