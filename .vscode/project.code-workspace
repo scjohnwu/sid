@@ -83,7 +83,8 @@
       "xstddef": "cpp",
       "xtree": "cpp",
       "xutility": "cpp",
-      "format": "cpp"
+      "format": "cpp",
+      "concepts": "cpp"
     },
     "task.autoDetect": "on",
   },
