@@ -1,7 +1,3 @@
-# CXX PROJECT TEMPLATE
+# Shooting in the dark
 
-## TODO::
-
-- pytest
-- CPack (library + app deployment)
-- doxygen
+## Small opengl/openal game built around state machines and quests
