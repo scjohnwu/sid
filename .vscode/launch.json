@@ -5,19 +5,22 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "debug_app",
-      "type": "cppvsdbg",
+      "name": "debug_app",      
       "request": "launch",
       "args": [],
       "stopAtEntry": false,
       "environment": [],
+      "type": "cppdbg",
       "externalConsole": false,
       // In case of need to debug release adjust the suffix
       "windows": {
+        "type": "cppvsdbg",
         "cwd": "${workspaceFolder}/build/bin/Debug/",
         "program": "${workspaceFolder}/build/bin/Debug/${input:app_name}_x64_debug.exe",
       },
       "linux": {
+        "MIMode": "gdb",
+        "miDebuggerPath": "/usr/bin/gdb",
         "cwd": "${workspaceFolder}/build/bin/",
         "program": "${workspaceFolder}/build/bin/${input:app_name}_x64_debug",
       }
