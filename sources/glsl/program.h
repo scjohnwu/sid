@@ -17,4 +17,5 @@ class Program {
     GLuint m_ProgramId{0};
     bool m_IsCompiled{false};
 };
+using ProgramPtr = std::shared_ptr<Program>;
 }  // namespace sid
