@@ -1,16 +1,21 @@
 #pragma once
 
-#include "opengl_support.h"
+#include <string>
 
-// Must be included after all other opengl includes
-#include "GLFW/glfw3.h"
+#include "opengl_support.h"
 
 namespace sid {
 class Window {
- public:
-  void Run();
+   public:
+    Window(unsigned int width, unsigned int height, std::string caption);
 
- private:
-  GLFWwindow* m_Window;
+    void SwapBuffers();
+    void PollEvents();
+
+    bool IsValid() const;
+    bool IsNotClosing() const;
+   private:
+    GLFWwindow* m_Window;
+    bool m_IsValid{false};
 };
 }  // namespace sid

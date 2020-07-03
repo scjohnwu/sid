@@ -1,34 +1,21 @@
 #include "window.h"
 
 namespace sid {
-void Window::Run() {
-  if (!glfwInit()) {
-    return;
-  }
+Window::Window(unsigned int width, unsigned int height, std::string caption) {
+    m_Window = glfwCreateWindow(width, height, caption.c_str(), nullptr, nullptr);
 
-  m_Window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-  if (!m_Window) {
-    glfwTerminate();
-    return;
-  }
-
-  glfwMakeContextCurrent(m_Window);
-
-  if (!OpenGLSupport::Init()) {
-    return;
-  }
-
-  while (!glfwWindowShouldClose(m_Window)) {
-    /* Render here */
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    /* Swap front and back buffers */
-    glfwSwapBuffers(m_Window);
-
-    /* Poll for and process events */
-    glfwPollEvents();
-  }
-
-  glfwTerminate();
+    if (m_Window) {
+        glfwMakeContextCurrent(m_Window);
+        m_IsValid = true;
+    }
 }
+
+void Window::SwapBuffers() { glfwSwapBuffers(m_Window); }
+
+void Window::PollEvents() { glfwPollEvents(); }
+
+bool Window::IsValid() const { return m_IsValid; }
+
+bool Window::IsNotClosing() const { return !glfwWindowShouldClose(m_Window); }
+
 }  // namespace sid
