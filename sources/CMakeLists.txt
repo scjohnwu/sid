@@ -13,11 +13,13 @@ find_package(imgui CONFIG REQUIRED)
 aux_source_directory(utility UtilitySources)
 aux_source_directory(glsl GLSLSources)
 aux_source_directory(glad GLADSources)
+aux_source_directory(render RenderSources)
 
 add_library(game_lib 
             ${UtilitySources} 
             ${GLSLSources} 
-            ${GLADSources})
+            ${GLADSources}
+            ${RenderSources})
 
 target_link_libraries(game_lib ${OPENGL_LIBRARIES} glfw)
 
