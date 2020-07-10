@@ -7,6 +7,12 @@ namespace sid {
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        glPointSize(30.0f);
+        for( auto& pass: m_Passes ) {
+            pass->Draw();
+        }
+    }
+
+    void Render::AddPass(RenderPassPtr render_pass) {
+        m_Passes.push_back(render_pass);
     }
 }

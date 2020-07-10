@@ -1,14 +1,20 @@
 #pragma once
+
+#include <vector>
+
+#include "render_pass.h"
 #include "scene.h"
 
+
 namespace sid {
-    class Render {
-        public:
+class Render {
+   public:
+    void Draw();
+    void AddPass(RenderPassPtr render_pass);
 
-        void Draw();
+   private:
+    ScenePtr m_CurrentScene;
 
-        private:
-
-        ScenePtr m_CurrentScene;
-    };
-}
+    std::vector<RenderPassPtr> m_Passes;
+};
+}  // namespace sid
