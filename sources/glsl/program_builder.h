@@ -7,6 +7,7 @@ class ProgramBuilder {
    public:
     ProgramBuilder& NewProgram();
     ProgramBuilder& AddShader(std::string file_name, ShaderType);
+    ProgramBuilder& AddShaderSrc(std::string src, ShaderType );
     ProgramPtr Build();
 
    private:
