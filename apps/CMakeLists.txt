@@ -4,9 +4,12 @@ project(game_app)
 
 include_directories(${CMAKE_SOURCE_DIR}/sources ${CMAKE_SOURCE_DIR}/includes)
 
+find_package(imgui REQUIRED)
 
-add_executable(game game/main.cpp)
-target_link_libraries(game game_lib)
+aux_source_directory(game/GUI GUISources)
+
+add_executable(game game/main.cpp ${GUISources})
+target_link_libraries(game game_lib imgui::imgui)
 
 add_custom_command(TARGET game PRE_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory

@@ -2,6 +2,8 @@
 #include "utility/window.h"
 #include "render/render.h"
 
+#include "GUI/gui_render_pass.h"
+
 int main(int arch, const char** argv) {
     sid::OpenGLSupport::LoadCore();
 
@@ -31,13 +33,12 @@ int main(int arch, const char** argv) {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
+    sid::RenderPassPtr gui_pass = std::make_shared<game::GUIRenderPass>();
     sid::Render render;
+    render.AddPass(gui_pass);
 
     while (window.IsNotClosing()) {
         render.Draw();
-
-        simple_program->Apply();
-        glDrawArrays(GL_POINTS, 0, 1);
 
         window.SwapBuffers();
         window.PollEvents();
