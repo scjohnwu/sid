@@ -1,5 +1,6 @@
 #include "render.h"
 #include "glad/glad.h"
+#include "spdlog/spdlog.h"
 
 namespace sid {
     void Render::Draw() {
@@ -14,5 +15,7 @@ namespace sid {
 
     void Render::AddPass(RenderPassPtr render_pass) {
         m_Passes.push_back(render_pass);
+        
+        spdlog::info("New render pass added");
     }
 }
