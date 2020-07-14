@@ -11,7 +11,9 @@
         "args": [
           "..",
           "-G",
-          "Visual Studio 15 2017 Win64",
+          "Visual Studio 16 2019",
+          "-A",
+          "x64",
           "-DCMAKE_BUILD_TYPE=${input:build_type}"
         ]
       },
