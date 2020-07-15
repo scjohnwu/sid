@@ -14,6 +14,8 @@ class Window {
 
     bool IsValid() const;
     bool IsNotClosing() const;
+
+    GLFWwindow* get() const;
    private:
     GLFWwindow* m_Window;
     bool m_IsValid{false};

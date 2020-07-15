@@ -16,6 +16,8 @@ void Window::PollEvents() { glfwPollEvents(); }
 
 bool Window::IsValid() const { return m_IsValid; }
 
+GLFWwindow* Window::get() const { return m_Window; }
+
 bool Window::IsNotClosing() const { return !glfwWindowShouldClose(m_Window); }
 
 }  // namespace sid

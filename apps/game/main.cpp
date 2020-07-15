@@ -30,7 +30,9 @@ int main(int arch, const char** argv) {
     gl::glGenVertexArrays(gl::GLsizei{1}, &vao);
     gl::glBindVertexArray(vao);
 
-    sid::RenderPassPtr gui_pass = std::make_shared<game::GUIRenderPass>();
+    auto gui_pass = std::make_shared<game::GUIRenderPass>();
+    gui_pass->Init(window.get());
+
     sid::Render render;
     render.AddPass(gui_pass);
 

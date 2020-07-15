@@ -2,6 +2,7 @@
 
 #include "globjects/base/StaticStringSource.h"
 #include "globjects/base/File.h"
+#include "globjects/globjects.h"
 
 namespace sid {
 bool OpenGLSupport::LoadCore() {
@@ -15,6 +16,8 @@ void OpenGLSupport::EnableVSync() { glfwSwapInterval(1); }
 
 bool OpenGLSupport::LoadExtensions() {
     glbinding::initialize(glfwGetProcAddress);
+    globjects::setCurrentContext();
+
     return true;
 }
 
@@ -22,14 +25,26 @@ void OpenGLSupport::TerminateCore() { glfwTerminate(); }
 
 ProgramPtr make_program() { return std::make_shared<globjects::Program>(); }
 ShaderPtr make_shader(const gl::GLenum type, globjects::AbstractStringSource* source) {
-    return std::make_unique<globjects::Shader>(type, source);
+    return globjects::Shader::create(type, source);
 }
 
 ShaderPtr make_shader(const gl::GLenum type, std::string filename) { 
     auto file_source = globjects::Shader::sourceFromFile(filename);
     auto string_source = globjects::Shader::sourceFromString(file_source->string());
 
-    return make_shader(type, string_source.get());
+    auto result = make_shader(type, string_source.get());
+    result->removeSubject(string_source.get());
+    result->setSource(nullptr);
+    
+    return std::move(result);
+}
+
+BufferPtr make_buffer() {
+    return std::make_shared<globjects::Buffer>();
+}
+
+VertexArrayPtr make_vertex_array() {
+    return std::make_shared<globjects::VertexArray>();
 }
 
 }  // namespace sid
