@@ -1,8 +1,8 @@
-#include "glsl/program_builder.h"
 #include "utility/window.h"
 #include "render/render.h"
 
 #include "GUI/gui_render_pass.h"
+#include "spdlog/spdlog.h"
 
 int main(int arch, const char** argv) {
     sid::OpenGLSupport::LoadCore();
@@ -10,28 +10,25 @@ int main(int arch, const char** argv) {
     sid::Window window(640, 480, "Shooting in the dark");
 
     if (!window.IsValid()) {
+        spdlog::critical("Could not create window");
         sid::OpenGLSupport::TerminateCore();
         return -1;
     }
 
     if (!sid::OpenGLSupport::LoadExtensions()) {
+        spdlog::critical("Could not load opengl extensions");
         sid::OpenGLSupport::TerminateCore();
         return -1;
     }
 
+    spdlog::info("Application essentials have been initialized");
+
     sid::OpenGLSupport::EnableVSync();
 
-    sid::ProgramBuilder builder;
-
-    auto simple_program = builder.NewProgram()
-                              .AddShader("simple_vertex.vs", sid::ShaderType::Vertex)
-                              .AddShader("simple_fragment.fs", sid::ShaderType::Fragment)
-                              .Build();
-
     // TODO:: move into class
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    gl::GLuint vao;
+    gl::glGenVertexArrays(gl::GLsizei{1}, &vao);
+    gl::glBindVertexArray(vao);
 
     sid::RenderPassPtr gui_pass = std::make_shared<game::GUIRenderPass>();
     sid::Render render;

@@ -1,5 +1,5 @@
 #include "render.h"
-#include "glad/glad.h"
+#include "utility/opengl_support.h"
 #include "spdlog/spdlog.h"
 
 namespace sid {

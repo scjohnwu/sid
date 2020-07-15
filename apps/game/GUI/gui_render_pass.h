@@ -1,6 +1,6 @@
 #include "render/render_pass.h"
 #include "utility/opengl_support.h"
-#include "glsl/program_builder.h"
+
 
 namespace game {
 class GUIRenderPass : public sid::RenderPass {
@@ -13,6 +13,7 @@ class GUIRenderPass : public sid::RenderPass {
     bool InitShaders();
 
     GLuint m_FontTexture;
-    sid::ProgramPtr m_GUIProgram;
+
+    sid::ProgramPtr m_Program;
 };
 }  // namespace game
