@@ -12,6 +12,7 @@
 #include "globjects/VertexAttributeBinding.h"
 #include "globjects/Texture.h"
 #include "globjects/TextureHandle.h"
+#include "globjects/base/AbstractStringSource.h"
 
 // Don't include gl.h manually
 #define GLFW_INCLUDE_NONE
@@ -20,6 +21,8 @@
 
 // gl math library
 #include "glm/glm.hpp"
+
+#include <tuple>
 
 namespace sid {
 class OpenGLSupport {
@@ -37,9 +40,15 @@ class OpenGLSupport {
 using ProgramPtr = std::shared_ptr<globjects::Program>;
 ProgramPtr make_program();
 
+namespace st {
+    enum {
+        Shader, Source
+    };
+}
+
+using ShaderSourcePtr = std::unique_ptr<globjects::AbstractStringSource>;
 using ShaderPtr = std::unique_ptr<globjects::Shader>;
-ShaderPtr make_shader(const gl::GLenum type, globjects::AbstractStringSource * source);
-ShaderPtr make_shader(const gl::GLenum type, std::string filename);
+std::tuple<ShaderPtr, ShaderSourcePtr> make_shader(const gl::GLenum type, std::string filename);
 
 using BufferPtr = std::shared_ptr<globjects::Buffer>;
 BufferPtr make_buffer();

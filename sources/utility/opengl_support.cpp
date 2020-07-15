@@ -15,8 +15,9 @@ bool OpenGLSupport::LoadCore() {
 void OpenGLSupport::EnableVSync() { glfwSwapInterval(1); }
 
 bool OpenGLSupport::LoadExtensions() {
-    glbinding::initialize(glfwGetProcAddress);
-    globjects::setCurrentContext();
+    globjects::init([](const char* name) {
+        return glfwGetProcAddress(name);
+    });
 
     return true;
 }
@@ -24,19 +25,14 @@ bool OpenGLSupport::LoadExtensions() {
 void OpenGLSupport::TerminateCore() { glfwTerminate(); }
 
 ProgramPtr make_program() { return std::make_shared<globjects::Program>(); }
-ShaderPtr make_shader(const gl::GLenum type, globjects::AbstractStringSource* source) {
-    return globjects::Shader::create(type, source);
-}
 
-ShaderPtr make_shader(const gl::GLenum type, std::string filename) { 
+std::tuple<ShaderPtr, ShaderSourcePtr>  make_shader(const gl::GLenum type, std::string filename) { 
     auto file_source = globjects::Shader::sourceFromFile(filename);
     auto string_source = globjects::Shader::sourceFromString(file_source->string());
 
-    auto result = make_shader(type, string_source.get());
-    result->removeSubject(string_source.get());
-    result->setSource(nullptr);
+    auto result = std::make_unique<globjects::Shader>(type, string_source.get());
     
-    return std::move(result);
+    return std::make_tuple(std::move(result), std::move(string_source));
 }
 
 BufferPtr make_buffer() {

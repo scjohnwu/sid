@@ -15,6 +15,9 @@ class GUIRenderPass : public sid::RenderPass {
     void InitShaders();
     void InitBuffers();
 
+    void SetRenderState();
+    void RevertRenderState();
+
     void RenderDrawData(ImDrawData* data);
 
     sid::ProgramPtr m_Program;
@@ -23,9 +26,15 @@ class GUIRenderPass : public sid::RenderPass {
     sid::BufferPtr m_VBO;
     sid::BufferPtr m_EBO;
 
-    sid::VertexAttribPtr m_PosAttrib;
+    sid::VertexAttribPtr m_VertexAttrib;
     sid::VertexAttribPtr m_UVAttrib;
     sid::VertexAttribPtr m_ColorAttrib;
+
+    sid::ShaderPtr m_VertexShader;
+    sid::ShaderSourcePtr m_VertexShaderSource;
+
+    sid::ShaderPtr m_FragmentShader;
+    sid::ShaderSourcePtr m_FragmentShaderSource;
 
     sid::TexturePtr m_Texture;
 

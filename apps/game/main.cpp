@@ -2,6 +2,7 @@
 #include "render/render.h"
 
 #include "GUI/gui_render_pass.h"
+#include "render/simple_rp.h"
 #include "spdlog/spdlog.h"
 
 int main(int arch, const char** argv) {
@@ -28,8 +29,12 @@ int main(int arch, const char** argv) {
     auto gui_pass = std::make_shared<game::GUIRenderPass>();
     gui_pass->Init(window.get());
 
+    auto simple_rp = std::make_shared<sid::SimpleRenderPass>();
+    simple_rp->Init();
+
     sid::Render render;
     render.AddPass(gui_pass);
+    // render.AddPass(simple_rp);
 
     while (window.IsNotClosing()) {
         render.Draw();
