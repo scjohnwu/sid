@@ -10,6 +10,8 @@
 #include "globjects/VertexArray.h"
 #include "globjects/Buffer.h"
 #include "globjects/VertexAttributeBinding.h"
+#include "globjects/Texture.h"
+#include "globjects/TextureHandle.h"
 
 // Don't include gl.h manually
 #define GLFW_INCLUDE_NONE
@@ -46,5 +48,8 @@ using VertexArrayPtr = std::shared_ptr<globjects::VertexArray>;
 VertexArrayPtr make_vertex_array();
 
 using VertexAttribPtr = std::unique_ptr<globjects::VertexAttributeBinding>;
+
+using TexturePtr = std::shared_ptr<globjects::Texture>;
+TexturePtr make_texture();
 
 }  // namespace sid

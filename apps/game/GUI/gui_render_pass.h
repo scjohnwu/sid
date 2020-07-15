@@ -1,5 +1,7 @@
 #include "render/render_pass.h"
+// All render stuff
 #include "utility/opengl_support.h"
+// UI library
 #include "imgui.h"
 
 namespace game {
@@ -15,8 +17,6 @@ class GUIRenderPass : public sid::RenderPass {
 
     void RenderDrawData(ImDrawData* data);
 
-    gl::GLuint m_FontTexture;
-
     sid::ProgramPtr m_Program;
 
     sid::VertexArrayPtr m_VAO;
@@ -27,8 +27,10 @@ class GUIRenderPass : public sid::RenderPass {
     sid::VertexAttribPtr m_UVAttrib;
     sid::VertexAttribPtr m_ColorAttrib;
 
-    bool m_ShowDemoWindow { true };
-    GLFWwindow* m_Window;
+    sid::TexturePtr m_Texture;
 
+    bool m_ShowDemoWindow { true };
+
+    GLFWwindow* m_Window { nullptr };
 };
 }  // namespace game

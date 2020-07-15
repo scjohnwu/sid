@@ -7,7 +7,7 @@
 int main(int arch, const char** argv) {
     sid::OpenGLSupport::LoadCore();
 
-    sid::Window window(640, 480, "Shooting in the dark");
+    sid::Window window(1280, 720, "Shooting in the dark");
 
     if (!window.IsValid()) {
         spdlog::critical("Could not create window");
@@ -24,11 +24,6 @@ int main(int arch, const char** argv) {
     spdlog::info("Application essentials have been initialized");
 
     sid::OpenGLSupport::EnableVSync();
-
-    // TODO:: move into class
-    gl::GLuint vao;
-    gl::glGenVertexArrays(gl::GLsizei{1}, &vao);
-    gl::glBindVertexArray(vao);
 
     auto gui_pass = std::make_shared<game::GUIRenderPass>();
     gui_pass->Init(window.get());

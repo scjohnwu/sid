@@ -1,8 +1,7 @@
 #include "gui_render_pass.h"
 
+// Some math
 #include "glm/ext/matrix_clip_space.hpp"
-#include "imgui.h"
-#include "utility/opengl_support.h"
 
 namespace game {
 
@@ -72,6 +71,9 @@ void GUIRenderPass::RenderDrawData(ImDrawData* data) {
     // TODO:: set uniforms
     m_Program->setUniform("ProjMtx", ortho_mat);
 
+    auto tex_location = m_Program->getUniformLocation("Texture");
+    m_Program->setUniform(tex_location, 0);
+
     m_VAO->bind();
     m_VBO->bind(gl::GL_ARRAY_BUFFER);
     m_EBO->bind(gl::GL_ELEMENT_ARRAY_BUFFER);
@@ -109,18 +111,16 @@ void GUIRenderPass::RenderDrawData(ImDrawData* data) {
                                   (int)(clip_rect.z - clip_rect.x),
                                   (int)(clip_rect.w - clip_rect.y));
 
-                    // Bind texture, Draw
-                    // glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
-                    // glDrawElements(
-                    //     GL_TRIANGLES, (GLsizei)pcmd->ElemCount,
-                    //     sizeof(ImDrawIdx) == 2 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT,
-                    //     (void*)(intptr_t)(pcmd->IdxOffset * sizeof(ImDrawIdx)));
+                    
+                    m_Texture->bind();
 
                     gl::GLenum mode = gl::GLenum::GL_TRIANGLES;
                     gl::GLenum vert_type = sizeof(ImDrawIdx) == 2 ? gl::GL_UNSIGNED_SHORT
                                                                   : gl::GL_UNSIGNED_INT;
 
                     m_VAO->drawElements(mode, pcmd->ElemCount, vert_type, nullptr);
+
+                    m_Texture->unbind();
                 }
             }
         }
@@ -137,14 +137,19 @@ void GUIRenderPass::InitFontTexture() {
     int width = 0, height = 0;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
 
-    gl::glGenTextures(1, &m_FontTexture);
-    gl::glBindTexture(gl::GL_TEXTURE_2D, m_FontTexture);
-    gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_LINEAR);
-    gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_LINEAR);
+    m_Texture = sid::make_texture();
+    m_Texture->bind();
+    m_Texture->setParameter(gl::GL_TEXTURE_MIN_FILTER, gl::GL_LINEAR);
+    m_Texture->setParameter(gl::GL_TEXTURE_MAG_FILTER, gl::GL_LINEAR);
+    m_Texture->image2D(0, gl::GL_RGBA, width, height, 0, gl::GL_RGBA,
+                     gl::GL_UNSIGNED_BYTE, pixels);
+
     gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGBA, width, height, 0, gl::GL_RGBA,
                      gl::GL_UNSIGNED_BYTE, pixels);
 
-    io.Fonts->TexID = reinterpret_cast<ImTextureID>(m_FontTexture);
+    io.Fonts->TexID = reinterpret_cast<ImTextureID>(m_Texture->textureHandle().handle());
+
+    m_Texture->unbind();
 }
 
 void GUIRenderPass::InitShaders() {
@@ -168,6 +173,7 @@ void GUIRenderPass::InitBuffers() {
     auto vbo_location = m_Program->getAttributeLocation("Position");
     m_VAO->enable(vbo_location);
     m_PosAttrib.reset(m_VAO->binding(vbo_location));
+    m_PosAttrib->setBuffer(m_VBO.get(), 0, sizeof(ImDrawVert));
     m_PosAttrib->setFormat(sizeof(ImDrawVert), gl::GL_FLOAT, false,
                            IM_OFFSETOF(ImDrawVert, pos));
 

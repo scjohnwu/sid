@@ -47,4 +47,8 @@ VertexArrayPtr make_vertex_array() {
     return std::make_shared<globjects::VertexArray>();
 }
 
+TexturePtr make_texture() {
+    return std::make_shared<globjects::Texture>();
+}
+
 }  // namespace sid
