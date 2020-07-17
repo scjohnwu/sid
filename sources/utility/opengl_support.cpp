@@ -7,7 +7,7 @@
 namespace sid {
 bool OpenGLSupport::LoadCore() {
     auto result = static_cast<bool>(glfwInit());
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     return result;
 }

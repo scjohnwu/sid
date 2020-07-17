@@ -36,9 +36,6 @@ void GUIRenderPass::Init(GLFWwindow* window) {
     InitFontTexture();
     InitBuffers();
 
-    // globjects::Buffer::hintBindlessImplementation(globjects::Buffer::BindlessImplementation::Legacy);
-    // globjects::Buffer::hintNameImplementation(globjects::Buffer::NameImplementation::Legacy);
-
     m_Window = window;
 }
 
@@ -64,27 +61,7 @@ void GUIRenderPass::Draw() {
     ImGui::NewFrame();
 
     if (m_ShowDemoWindow) {
-        //ImGui::ShowDemoWindow(&m_ShowDemoWindow);
-                 static float f = 0.0f;
-            static int counter = 0;
-            ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &m_ShowDemoWindow);      // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &m_ShowDemoWindow);
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-
+        ImGui::ShowDemoWindow(&m_ShowDemoWindow);
     }
 
     ImGui::Render();
@@ -109,46 +86,22 @@ void GUIRenderPass::RenderDrawData(ImDrawData* data) {
 
     auto ortho_mat = glm::ortho(L, R, B, T);
 
-    // TODO:: set uniforms
-
     ImVec2 clip_off = data->DisplayPos;
     ImVec2 clip_scale = data->FramebufferScale;
 
     gl::glPolygonMode(gl::GL_FRONT_AND_BACK, gl::GL_FILL);
 
-
-    // gl::glBindVertexArray(m_RawVAO);
-    m_VAO->bind();
-
     for (int n = 0; n < data->CmdListsCount; n++) {
         const ImDrawList* cmd_list = data->CmdLists[n];
 
-        m_VBO->bind(gl::GL_VERTEX_ARRAY);
         m_VBO->setData((gl::GLsizeiptr)cmd_list->VtxBuffer.Size * (int)sizeof(ImDrawVert),
                        (const gl::GLvoid*)cmd_list->VtxBuffer.Data, gl::GL_STREAM_DRAW);
-        m_EBO->bind(gl::GL_ELEMENT_ARRAY_BUFFER);
         m_EBO->setData((gl::GLsizeiptr)cmd_list->IdxBuffer.Size * (int)sizeof(ImDrawIdx),
-                       (const gl::GLvoid*)cmd_list->IdxBuffer.Data, gl::GL_STREAM_DRAW);
-   
-
-        // "Common raw"
-        // gl::glBindBuffer(gl::GL_ARRAY_BUFFER, m_RawVBO);
-        // gl::glBufferData(
-        //     gl::GL_ARRAY_BUFFER,
-        //     (gl::GLsizeiptr)cmd_list->VtxBuffer.Size * (int)sizeof(ImDrawVert),
-        //     (const gl::GLvoid*)cmd_list->VtxBuffer.Data, gl::GL_STREAM_DRAW);
-
-        // gl::glBindBuffer(gl::GL_ELEMENT_ARRAY_BUFFER, m_RawEBO);
-        // gl::glBufferData(
-        //     gl::GL_ELEMENT_ARRAY_BUFFER,
-        //     (gl::GLsizeiptr)cmd_list->IdxBuffer.Size * (int)sizeof(ImDrawVert),
-        //     (const gl::GLvoid*)cmd_list->IdxBuffer.Data, gl::GL_STREAM_DRAW);        
+                       (const gl::GLvoid*)cmd_list->IdxBuffer.Data, gl::GL_STREAM_DRAW);  
 
         m_Program->use();
         m_Program->setUniform("ProjMtx", ortho_mat);
-
-        auto tex_location = m_Program->getUniformLocation("Texture");
-        m_Program->setUniform(tex_location, 0);
+        m_Program->setUniform("Texture", 0);
 
         for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++) {
             const ImDrawCmd* pcmd = &cmd_list->CmdBuffer[cmd_i];
@@ -159,14 +112,9 @@ void GUIRenderPass::RenderDrawData(ImDrawData* data) {
             clip_rect.z = (pcmd->ClipRect.z - clip_off.x) * clip_scale.x;
             clip_rect.w = (pcmd->ClipRect.w - clip_off.y) * clip_scale.y;
 
-            // "Modern"
-            gl::glBindVertexBuffer(0, m_VBO->id(), 0, sizeof(ImDrawVert));
-            gl::glBindVertexBuffer(1, m_VBO->id(), 0, sizeof(ImDrawVert));
-            gl::glBindVertexBuffer(2, m_VBO->id(), 0, sizeof(ImDrawVert));
-
-            // m_VertexAttrib->setBuffer(m_VBO.get(), 0, sizeof(ImDrawVert));
-            // m_UVAttrib->setBuffer(m_VBO.get(), 0, sizeof(ImDrawVert));
-            // m_ColorAttrib->setBuffer(m_VBO.get(), 0, sizeof(ImDrawVert));
+            m_VertexAttrib->setBuffer(m_VBO.get(), 0, sizeof(ImDrawVert));
+            m_UVAttrib->setBuffer(m_VBO.get(), 0, sizeof(ImDrawVert));
+            m_ColorAttrib->setBuffer(m_VBO.get(), 0, sizeof(ImDrawVert));
 
             if (clip_rect.x < fb_width && clip_rect.y < fb_height &&
                 clip_rect.z >= 0.0f && clip_rect.w >= 0.0f) {
@@ -182,12 +130,8 @@ void GUIRenderPass::RenderDrawData(ImDrawData* data) {
 
                 auto offset = (pcmd->IdxOffset * sizeof(ImDrawIdx));
 
-                // m_VAO->drawElements(mode, pcmd->ElemCount, vert_type,
-                //                     (void*)(intptr_t)offset);
-
-                // Common Raw
-                gl::glDrawElements(mode, (gl::GLsizei)pcmd->ElemCount, vert_type,
-                                   (void*)(intptr_t)offset);
+                m_VAO->drawElements(mode, pcmd->ElemCount, vert_type,
+                                    (void*)(intptr_t)offset);
             }
         }
 
@@ -240,11 +184,7 @@ void GUIRenderPass::InitBuffers() {
     m_EBO = sid::make_buffer();
     m_VBO = sid::make_buffer();
 
-    // "Common raw"
-    gl::glGenVertexArrays(1, &m_RawVAO);
-    gl::glGenBuffers(1, &m_RawVBO);
-    // gl::glGenBuffers(1, &m_RawEBO);
-    // gl::glBindVertexArray(m_RawVAO);
+    m_VAO->bindElementBuffer(m_EBO.get());
 
     auto vbo_offset = IM_OFFSETOF(ImDrawVert, pos);
     auto uv_offset = IM_OFFSETOF(ImDrawVert, uv);
@@ -269,39 +209,6 @@ void GUIRenderPass::InitBuffers() {
     m_VAO->enable(2);
 
     m_VAO->unbind();
-
-    // "Modern"
-    // gl::glVertexAttribFormat(0, 2, gl::GL_FLOAT, false, vbo_offset );
-    // gl::glVertexAttribBinding(0, 0);
-    // gl::glEnableVertexAttribArray(0);
-
-    // gl::glVertexAttribFormat(1, 2, gl::GL_FLOAT, false, uv_offset );
-    // gl::glVertexAttribBinding(1, 1);
-    // gl::glEnableVertexAttribArray(1);
-
-    // gl::glVertexAttribFormat(2, 4, gl::GL_UNSIGNED_BYTE, true, color_offset);
-    // gl::glVertexAttribBinding(2, 2);
-    // gl::glEnableVertexAttribArray(2);
-
-    // m_VAO->unbind();
-    // gl::glBindVertexArray(0);
-
-    // "Legacy"
-    // gl::glBindBuffer(gl::GL_ARRAY_BUFFER, m_RawVBO);
-    // gl::glBindBuffer(gl::GL_ELEMENT_ARRAY_BUFFER, m_RawEBO);
-
-    // gl::glEnableVertexAttribArray(0);
-    // gl::glEnableVertexAttribArray(1);
-    // gl::glEnableVertexAttribArray(2);
-
-    // gl::glVertexAttribPointer(0, 2, gl::GL_FLOAT, gl::GL_FALSE, sizeof(ImDrawVert),
-    //                           (gl::GLvoid*)vbo_offset);
-    // gl::glVertexAttribPointer(1, 2, gl::GL_FLOAT, gl::GL_FALSE, sizeof(ImDrawVert),
-    //                           (gl::GLvoid*)uv_offset);
-    // gl::glVertexAttribPointer(2, 4, gl::GL_UNSIGNED_BYTE, gl::GL_TRUE, sizeof(ImDrawVert),
-    //                           (gl::GLvoid*)color_offset);
-
-
 }
 
 void GUIRenderPass::SetRenderState() {
