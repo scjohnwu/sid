@@ -5,7 +5,6 @@
 #include "render_pass.h"
 #include "scene.h"
 
-
 namespace sid {
 class Render {
    public:

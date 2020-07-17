@@ -1,7 +1,7 @@
 #include "render_pass.h"
 
 // opengl stuff
-#include "utility./opengl_support.h"
+#include "utility/opengl_support.h"
 
 namespace sid {
 class SimpleRenderPass : public RenderPass {
