@@ -6,7 +6,7 @@ include_directories(${CMAKE_SOURCE_DIR}/sources ${CMAKE_SOURCE_DIR}/includes)
 
 find_package(imgui REQUIRED)
 
-aux_source_directory(game/GUI GUISources)
+aux_source_directory(game/gui GUISources)
 
 add_executable(game game/main.cpp ${GUISources})
 target_link_libraries(game game_lib imgui::imgui)

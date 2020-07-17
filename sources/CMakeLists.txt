@@ -14,14 +14,12 @@ find_package(glbinding REQUIRED)
 find_package(glm REQUIRED)
 
 aux_source_directory(utility UtilitySources)
-aux_source_directory(glsl GLSLSources)
-aux_source_directory(glad GLADSources)
+aux_source_directory(gui GUISources)
 aux_source_directory(render RenderSources)
 
 add_library(game_lib 
             ${UtilitySources} 
-            ${GLSLSources} 
-            ${GLADSources}
+            ${GUISources}
             ${RenderSources})
 
 target_link_libraries(game_lib 

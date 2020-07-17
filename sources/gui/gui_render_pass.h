@@ -1,14 +1,21 @@
+#pragma once
 #include "render/render_pass.h"
 // All render stuff
 #include "utility/opengl_support.h"
 // UI library
 #include "imgui.h"
 
-namespace game {
+#include "gui_layout.h"
+
+#include <array>
+
+namespace sid {
 class GUIRenderPass : public sid::RenderPass {
    public:
     void Init(GLFWwindow* window);
     void Draw() override;
+
+    void SetLayout(GUILayoutPtr layout);
 
    private:
     void InitFontTexture();
@@ -19,6 +26,8 @@ class GUIRenderPass : public sid::RenderPass {
     void RevertRenderState();
 
     void RenderDrawData(ImDrawData* data);
+    void UpdateMouseState();
+    void UpdateMouseCursor();
 
     sid::ProgramPtr m_Program;
 
@@ -40,10 +49,13 @@ class GUIRenderPass : public sid::RenderPass {
     gl::GLuint m_RawEBO{0};
     gl::GLuint m_RawVAO{0};
 
+    std::array<bool, ImGuiMouseButton_COUNT> m_MousePressed;
+    std::array<GLFWcursor*, ImGuiMouseCursor_COUNT> m_MouseCursors;
+
     sid::TexturePtr m_Texture;
     double m_TimeGlobal{0.0};
 
-    bool m_ShowDemoWindow{true};
+    GUILayoutPtr m_Layout;
 
     GLFWwindow* m_Window{nullptr};
 };

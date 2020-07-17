@@ -1,7 +1,9 @@
 #include "utility/window.h"
 #include "render/render.h"
 
-#include "GUI/gui_render_pass.h"
+#include "gui/viewer_gui.h"
+
+#include "gui/gui_render_pass.h"
 #include "render/simple_rp.h"
 #include "spdlog/spdlog.h"
 
@@ -26,15 +28,18 @@ int main(int arch, const char** argv) {
 
     sid::OpenGLSupport::EnableVSync();
 
-    auto gui_pass = std::make_shared<game::GUIRenderPass>();
+    auto layout = std::make_shared<game::ViewerGUI>();
+
+    auto gui_pass = std::make_shared<sid::GUIRenderPass>();
     gui_pass->Init(window.get());
+    gui_pass->SetLayout(layout);
 
     auto simple_rp = std::make_shared<sid::SimpleRenderPass>();
     simple_rp->Init();
 
     sid::Render render;
     render.AddPass(gui_pass);
-    // render.AddPass(simple_rp);
+    render.AddPass(simple_rp);
 
     while (window.IsNotClosing()) {
         render.Draw();
