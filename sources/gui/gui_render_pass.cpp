@@ -6,6 +6,17 @@
 
 namespace sid {
 
+GUIRenderPass::~GUIRenderPass() {
+    // Correct utilization order
+    m_Program = nullptr;
+
+    m_VertexShader.reset(nullptr);
+    m_VertexShaderSource.reset(nullptr);
+
+    m_FragmentShader.reset(nullptr);
+    m_FragmentShaderSource.reset(nullptr);
+}
+
 void GUIRenderPass::Init(GLFWwindow* window) {
     ImGui::StyleColorsDark();
 
@@ -18,23 +29,28 @@ void GUIRenderPass::Init(GLFWwindow* window) {
 
 void GUIRenderPass::SetLayout(GUILayoutPtr layout) { m_Layout = layout; }
 
-void GUIRenderPass::Draw() {
+void GUIRenderPass::UpdateUIClock() {
     ImGuiIO& io = ImGui::GetIO();
 
     int w = 0, h = 0;
     int display_w = 0, display_h = 0;
     glfwGetWindowSize(m_Window, &w, &h);
     glfwGetFramebufferSize(m_Window, &display_w, &display_h);
-    io.DisplaySize = ImVec2((float)w, (float)h);
+    io.DisplaySize = ImVec2(static_cast<float>(w), static_cast<float>(h));
 
     double current_time = glfwGetTime();
-    io.DeltaTime =
-        m_TimeGlobal > 0.0 ? (float)(current_time - m_TimeGlobal) : (float)(1.0f / 60.0f);
+    io.DeltaTime = m_TimeGlobal > 0.0 ? static_cast<float>(current_time - m_TimeGlobal)
+                                      : 1.0f / 60.0f;
     m_TimeGlobal = current_time;
 
     if (w > 0 && h > 0) {
-        io.DisplayFramebufferScale = ImVec2((float)display_w / w, (float)display_h / h);
+        io.DisplayFramebufferScale =
+            ImVec2(static_cast<float>(display_w) / w, static_cast<float>(display_h) / h);
     }
+}
+
+void GUIRenderPass::Draw() {
+    UpdateUIClock();
 
     SetRenderState();
 
@@ -179,19 +195,19 @@ void GUIRenderPass::InitBuffers() {
     const gl::GLuint color_idx = 2;
 
     auto vbo_location = m_Program->getAttributeLocation("Position");
-    m_VertexAttrib.reset(m_VAO->binding(vbo_idx));
+    m_VertexAttrib = m_VAO->binding(vbo_idx);
     m_VertexAttrib->setAttribute(vbo_location);
     m_VertexAttrib->setFormat(2, gl::GL_FLOAT, gl::GL_FALSE, vbo_offset);
     m_VAO->enable(vbo_idx);
 
     auto uv_location = m_Program->getAttributeLocation("UV");
-    m_UVAttrib.reset(m_VAO->binding(uv_idx));
+    m_UVAttrib = m_VAO->binding(uv_idx);
     m_UVAttrib->setAttribute(uv_location);
     m_UVAttrib->setFormat(2, gl::GL_FLOAT, gl::GL_FALSE, uv_offset);
     m_VAO->enable(uv_idx);
 
     auto color_location = m_Program->getAttributeLocation("Color");
-    m_ColorAttrib.reset(m_VAO->binding(color_idx));
+    m_ColorAttrib = m_VAO->binding(color_idx);
     m_ColorAttrib->setAttribute(color_location);
     m_ColorAttrib->setFormat(4, gl::GL_UNSIGNED_BYTE, gl::GL_TRUE, color_offset);
     m_VAO->enable(color_idx);

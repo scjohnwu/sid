@@ -56,7 +56,8 @@ BufferPtr make_buffer();
 using VertexArrayPtr = std::shared_ptr<globjects::VertexArray>;
 VertexArrayPtr make_vertex_array();
 
-using VertexAttribPtr = std::unique_ptr<globjects::VertexAttributeBinding>;
+// using VertexAttribPtr = std::unique_ptr<globjects::VertexAttributeBinding>;
+using VertexAttribPtr = globjects::VertexAttributeBinding*;
 
 using TexturePtr = std::shared_ptr<globjects::Texture>;
 TexturePtr make_texture();

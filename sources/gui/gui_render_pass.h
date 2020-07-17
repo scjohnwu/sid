@@ -12,6 +12,8 @@
 namespace sid {
 class GUIRenderPass : public sid::RenderPass {
    public:
+    ~GUIRenderPass();
+
     void Init(GLFWwindow* window);
     void Draw() override;
 
@@ -24,6 +26,8 @@ class GUIRenderPass : public sid::RenderPass {
 
     void SetRenderState();
     void RevertRenderState();
+
+    void UpdateUIClock();
 
     void RenderDrawData(ImDrawData* data);
 
