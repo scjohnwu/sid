@@ -47,6 +47,9 @@ class GUIRenderPass : public sid::RenderPass {
     sid::ShaderPtr m_FragmentShader;
     sid::ShaderSourcePtr m_FragmentShaderSource;
 
+    sid::StatePtr m_PrevState;
+    sid::StatePtr m_GUIState;
+
     gl::GLuint m_RawVBO{0};
     gl::GLuint m_RawEBO{0};
     gl::GLuint m_RawVAO{0};

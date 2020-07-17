@@ -47,4 +47,8 @@ TexturePtr make_texture() {
     return std::make_shared<globjects::Texture>();
 }
 
+StatePtr make_state(globjects::State::Mode mode) {
+    return std::make_unique<globjects::State>(mode);
+}
+
 }  // namespace sid

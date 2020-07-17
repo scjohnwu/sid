@@ -40,16 +40,18 @@ int main(int arch, const char** argv) {
     auto layout = std::make_shared<game::ViewerGUI>();
     auto gui_pass = std::make_shared<sid::GUIRenderPass>();
     gui_pass->Init(window.get());
+
+    // Must be added last!
     gui_pass->SetLayout(layout);
 
     // Setup sample render pass
-    //auto simple_rp = std::make_shared<sid::SimpleRenderPass>();
-    //simple_rp->Init();
+    auto simple_rp = std::make_shared<sid::SimpleRenderPass>();
+    simple_rp->Init();
 
     // Add render passes to the renderer
     sid::Render render;
+    render.AddPass(simple_rp);
     render.AddPass(gui_pass);
-    //render.AddPass(simple_rp);
 
     while (window.IsNotClosing()) {
         // Updates, only for UI for now

@@ -6,6 +6,8 @@
 namespace sid {
 class SimpleRenderPass : public RenderPass {
    public:
+    ~SimpleRenderPass();
+
     void Init();
 
     void Draw() override;

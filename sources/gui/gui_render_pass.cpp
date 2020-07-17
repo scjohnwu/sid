@@ -176,6 +176,17 @@ void GUIRenderPass::InitShaders() {
     if (!m_Program->isLinked() || !m_Program->isValid()) {
         spdlog::info("Program link: {0}", m_Program->infoLog());
     }
+
+    m_GUIState = make_state(globjects::State::DeferredMode);
+
+    m_GUIState->enable(gl::GL_BLEND);
+    m_GUIState->enable(gl::GL_SCISSOR_TEST);
+
+    // gl::glBlendEquation(gl::GL_FUNC_ADD); ??
+    m_GUIState->blendFunc(gl::GL_SRC_ALPHA, gl::GL_ONE_MINUS_SRC_ALPHA);
+
+    m_GUIState->disable(gl::GL_CULL_FACE);
+    m_GUIState->disable(gl::GL_DEPTH_TEST);
 }
 
 void GUIRenderPass::InitBuffers() {
@@ -216,18 +227,12 @@ void GUIRenderPass::InitBuffers() {
 }
 
 void GUIRenderPass::SetRenderState() {
-    gl::glEnable(gl::GL_BLEND);
-    gl::glBlendEquation(gl::GL_FUNC_ADD);
-    gl::glBlendFunc(gl::GL_SRC_ALPHA, gl::GL_ONE_MINUS_SRC_ALPHA);
+    if (!m_PrevState) {
+        m_PrevState = globjects::State::currentState();
+    }
 
-    gl::glDisable(gl::GL_CULL_FACE);
-    gl::glDisable(gl::GL_DEPTH_TEST);
-    gl::glEnable(gl::GL_SCISSOR_TEST);
+    m_GUIState->apply();
 }
 
-void GUIRenderPass::RevertRenderState() {
-    gl::glEnable(gl::GL_CULL_FACE);
-    gl::glEnable(gl::GL_DEPTH_TEST);
-    gl::glDisable(gl::GL_SCISSOR_TEST);
-}
+void GUIRenderPass::RevertRenderState() { m_PrevState->apply(); }
 }  // namespace sid

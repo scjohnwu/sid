@@ -13,6 +13,7 @@
 #include "globjects/Texture.h"
 #include "globjects/TextureHandle.h"
 #include "globjects/base/AbstractStringSource.h"
+#include "globjects/State.h"
 
 // Don't include gl.h manually
 #define GLFW_INCLUDE_NONE
@@ -61,5 +62,8 @@ using VertexAttribPtr = globjects::VertexAttributeBinding*;
 
 using TexturePtr = std::shared_ptr<globjects::Texture>;
 TexturePtr make_texture();
+
+using StatePtr = std::unique_ptr<globjects::State>;
+StatePtr make_state(globjects::State::Mode mode);
 
 }  // namespace sid
