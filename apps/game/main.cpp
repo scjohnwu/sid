@@ -1,9 +1,11 @@
 #include "utility/window.h"
 #include "render/render.h"
 
+#include "gui/imgui_support.h"
 #include "gui/viewer_gui.h"
-
+#include "gui/controls.h"
 #include "gui/gui_render_pass.h"
+
 #include "render/simple_rp.h"
 #include "spdlog/spdlog.h"
 
@@ -24,24 +26,37 @@ int main(int arch, const char** argv) {
         return -1;
     }
 
+    sid::ImguiSupport::Init();
+
     spdlog::info("Application essentials have been initialized");
 
     sid::OpenGLSupport::EnableVSync();
 
-    auto layout = std::make_shared<game::ViewerGUI>();
+    // Initialize input event handling
+    sid::Controls controls;
+    controls.Init(&window);
 
+    // Setup GUI render pass
+    auto layout = std::make_shared<game::ViewerGUI>();
     auto gui_pass = std::make_shared<sid::GUIRenderPass>();
     gui_pass->Init(window.get());
     gui_pass->SetLayout(layout);
 
-    auto simple_rp = std::make_shared<sid::SimpleRenderPass>();
-    simple_rp->Init();
+    // Setup sample render pass
+    //auto simple_rp = std::make_shared<sid::SimpleRenderPass>();
+    //simple_rp->Init();
 
+    // Add render passes to the renderer
     sid::Render render;
     render.AddPass(gui_pass);
-    render.AddPass(simple_rp);
+    //render.AddPass(simple_rp);
 
     while (window.IsNotClosing()) {
+        // Updates, only for UI for now
+        controls.UpdateMouseState();
+        controls.UpdateMouseCursor();
+
+        // Iterates over all render passes in oreder of addition
         render.Draw();
 
         window.SwapBuffers();

@@ -26,8 +26,6 @@ class GUIRenderPass : public sid::RenderPass {
     void RevertRenderState();
 
     void RenderDrawData(ImDrawData* data);
-    void UpdateMouseState();
-    void UpdateMouseCursor();
 
     sid::ProgramPtr m_Program;
 
@@ -48,9 +46,6 @@ class GUIRenderPass : public sid::RenderPass {
     gl::GLuint m_RawVBO{0};
     gl::GLuint m_RawEBO{0};
     gl::GLuint m_RawVAO{0};
-
-    std::array<bool, ImGuiMouseButton_COUNT> m_MousePressed;
-    std::array<GLFWcursor*, ImGuiMouseCursor_COUNT> m_MouseCursors;
 
     sid::TexturePtr m_Texture;
     double m_TimeGlobal{0.0};
