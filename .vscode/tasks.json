@@ -52,7 +52,7 @@
         "."
       ],
       "group": "build",
-      "dependsOn": "cmake_generation",
+      //"dependsOn": "cmake_generation",
       "options": {
         "cwd": "${workspaceFolder}/build"
       },

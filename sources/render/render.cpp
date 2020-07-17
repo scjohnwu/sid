@@ -6,11 +6,9 @@
 
 namespace sid {
 void Render::Draw() {
-    gl::glClearColor(0.0, 0.0, 0.0, 1.0);
+    gl::glClearColor(1.0, 1.0, 1.0, 1.0);
     gl::glClear(gl::GL_COLOR_BUFFER_BIT);
     gl::glClear(gl::GL_DEPTH_BUFFER_BIT);
-
-    gl::glViewport(0, 0, 1280, 720);
 
     for (auto& pass : m_Passes) {
         pass->Draw();
