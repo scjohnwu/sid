@@ -18,3 +18,11 @@ add_custom_command(TARGET game PRE_BUILD
 add_custom_command(TARGET game PRE_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${CMAKE_SOURCE_DIR}/shaders/vertex $<TARGET_FILE_DIR:game>)
+            
+add_custom_command(TARGET game PRE_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/models $<TARGET_FILE_DIR:game>)
+
+add_custom_command(TARGET game PRE_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/textures $<TARGET_FILE_DIR:game>)

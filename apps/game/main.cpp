@@ -6,7 +6,7 @@
 #include "gui/controls.h"
 #include "gui/gui_render_pass.h"
 
-#include "render/simple_rp.h"
+#include "render/model_rp.h"
 #include "spdlog/spdlog.h"
 
 int main(int arch, const char** argv) {
@@ -45,12 +45,15 @@ int main(int arch, const char** argv) {
     gui_pass->SetLayout(layout);
 
     // Setup sample render pass
-    auto simple_rp = std::make_shared<sid::SimpleRenderPass>();
-    simple_rp->Init();
+    auto model_rp = std::make_shared<sid::ModelRenderPass>();
+    model_rp->Init();
+
+    auto model = sid::load_model("axe.obj");
+    model_rp->SetModel(model);
 
     // Add render passes to the renderer
     sid::Render render;
-    render.AddPass(simple_rp);
+    render.AddPass(model_rp);
     render.AddPass(gui_pass);
 
     while (window.IsNotClosing()) {
