@@ -48,7 +48,8 @@ int main(int arch, const char** argv) {
     auto model_rp = std::make_shared<sid::ModelRenderPass>();
     model_rp->Init();
 
-    auto model = sid::load_model("axe.obj");
+    auto model = sid::make_model();
+    model->LoadData("axe.obj");
     model_rp->SetModel(model);
 
     // Add render passes to the renderer

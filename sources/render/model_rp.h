@@ -35,6 +35,9 @@ class ModelRenderPass : public RenderPass {
 
     ShaderPtr m_FragmentShader;
     ShaderSourcePtr m_FragmentShaderSource;
+
+    StatePtr m_RenderState;
+    StatePtr m_PrevState;
 };
 using ModelRenderPassPtr = std::shared_ptr<ModelRenderPass>;
 
