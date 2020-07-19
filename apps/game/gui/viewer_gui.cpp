@@ -3,6 +3,7 @@
 
 namespace game {
     void ViewerGUI::Draw() {
-        ImGui::ShowDemoWindow(&m_ShowDemo);
+        using namespace ImGui;
+        ImGui::ShowDemoWindow();
     }
 }
