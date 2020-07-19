@@ -1,6 +1,7 @@
 #include "model_rp.h"
 
 #include "spdlog/spdlog.h"
+#include "glm/gtc/matrix_transform.hpp"
 
 namespace sid {
 ModelRenderPass::~ModelRenderPass() {
@@ -21,9 +22,18 @@ void ModelRenderPass::Draw() {
         m_PrevState = globjects::State::currentState();
     }
 
+   auto proj = glm::perspective( 45.0f, (float)1280/(float)720, 0.01f, 1000.0f);
+
+    auto trans_mat = glm::identity<glm::mat4>();
+    trans_mat = glm::scale(trans_mat, glm::vec3(0.01f, 0.01f, 0.01f));
+    trans_mat = glm::translate(trans_mat, glm::vec3(0, 0, -12.0f));
+    trans_mat = glm::rotate(trans_mat, 90.0f, glm::vec3(1.0f, 1.0f, 0.0f));
+
     m_RenderState->apply();
 
     m_Program->use();
+    m_Program->setUniform("transform", trans_mat);
+    m_Program->setUniform("projection", proj);
 
     m_RenderModel->Draw();
 
