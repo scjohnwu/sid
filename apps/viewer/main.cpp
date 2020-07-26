@@ -54,8 +54,8 @@ int main(int arch, const char** argv) {
 
     auto second_model = sid::make_model();
     second_model->LoadData("axe.obj");
-    second_model->SetRotation(0.0, 0.0, -90.0);
-    second_model->SetPosition(0.0, 0.1, 0.0);
+    second_model->SetRotation(0.0f, 0.0f, -90.0f);
+    second_model->SetPosition(0.0f, 0.1f, 0.0f);
 
     auto camera = std::make_shared<sid::Camera>();
     camera->SetPosition(0.0, 0.0, -0.5);
