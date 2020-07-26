@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "render_pass.h"
-#include "scene.h"
+#include "scene/scene.h"
 
 namespace sid {
 class Render {
