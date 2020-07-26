@@ -4,7 +4,8 @@
 #include "utility/opengl_support.h"
 
 // scene components
-#include "scene/model.h"
+#include "scene/camera.h"
+#include "scene/scene.h"
 
 namespace sid {
 class ModelRenderPass : public RenderPass {
@@ -15,18 +16,16 @@ class ModelRenderPass : public RenderPass {
 
     void Draw() override;
 
-    void SetModel(ModelPtr model);
+    void SetScene(ScenePtr scene);
+    void SetCamera(CameraPtr camera);
    private:
     void InitGeometry();
     void InitShader();
 
-    VertexArrayPtr m_VAO;
-    BufferPtr m_VBO;
-    BufferPtr m_EBO;
+    ScenePtr m_Scene;
+    std::vector<ModelPtr> m_Models;
 
-    VertexAttribPtr m_Position;
-
-    ModelPtr m_RenderModel;
+    CameraPtr m_Camera;
 
     ProgramPtr m_Program;
     

@@ -1,7 +1,8 @@
 #include "model_rp.h"
 
-#include "spdlog/spdlog.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "spdlog/spdlog.h"
+
 
 namespace sid {
 ModelRenderPass::~ModelRenderPass() {
@@ -15,62 +16,47 @@ ModelRenderPass::~ModelRenderPass() {
     m_FragmentShaderSource.reset(nullptr);
 }
 
-void ModelRenderPass::SetModel(ModelPtr model) { m_RenderModel = model; }
-
 void ModelRenderPass::Draw() {
-    if(!m_PrevState) {
+    if (!m_PrevState) {
         m_PrevState = globjects::State::currentState();
     }
 
-   auto proj_mat = glm::perspective( 45.0f, (float)1280/(float)720, 0.01f, 1000.0f);
-
-    auto model_mat = glm::identity<glm::mat4>();
-    // model_mat = glm::scale(model_mat, glm::vec3(0.01f, 0.01f, 0.01f));
-    model_mat = glm::translate(model_mat, glm::vec3(0, 0, 0));
-    model_mat = glm::rotate(model_mat, 90.0f, glm::vec3(1.0f, 1.0f, 0.0f));
-
-    auto view_mat = glm::identity<glm::mat4>();
-    view_mat = glm::translate(view_mat, glm::vec3(0.0f, 0.0f, -12.0f));
+    auto proj_mat = m_Camera->GetProjMat();
+    auto view_mat = m_Camera->GetViewMat();
 
     m_RenderState->apply();
-
     m_Program->use();
-    // from entity
-    m_Program->setUniform("model", model_mat);
+
     // ~constant
     m_Program->setUniform("projection", proj_mat);
     // from camera
     m_Program->setUniform("view", view_mat);
 
-    m_RenderModel->Draw();
+    for (auto& model : m_Models) {
+        auto model_mat = model->GetWorldMat();
+
+        // from entity
+        m_Program->setUniform("model", model_mat);
+        model->Draw();
+    }
 
     m_Program->release();
-
     m_PrevState->apply();
 }
 
 void ModelRenderPass::Init() {
-    InitGeometry();
     InitShader();
 
     m_RenderState = make_state(globjects::State::Mode::DeferredMode);
     m_RenderState->polygonMode(gl::GL_FRONT_AND_BACK, gl::GL_LINE);
 };
 
-void ModelRenderPass::InitGeometry() {
-    m_VAO = make_vertex_array();
-
-    m_VBO = make_buffer();
-    m_EBO = make_buffer();
-
-    m_VAO->bindElementBuffer(m_EBO.get());
-
-    m_Position = m_VAO->binding(0);
-    m_Position->setAttribute(0);
-    m_Position->setFormat(3, gl::GL_FLOAT, gl::GL_FALSE, 0);
-
-    m_VAO->enable(0);
+void ModelRenderPass::SetScene(ScenePtr scene) {
+    m_Scene = scene;
+    m_Models = m_Scene->GetRenderModels();
 }
+
+void ModelRenderPass::SetCamera(CameraPtr camera) { m_Camera = camera; }
 
 void ModelRenderPass::InitShader() {
     m_Program = sid::make_program();
