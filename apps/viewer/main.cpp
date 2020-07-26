@@ -1,13 +1,13 @@
-#include "utility/window.h"
-#include "render/render.h"
-
-#include "gui/imgui_support.h"
-#include "gui/viewer_gui.h"
 #include "gui/controls.h"
 #include "gui/gui_render_pass.h"
-
+#include "gui/imgui_support.h"
+#include "gui/viewer_gui.h"
 #include "render/model_rp.h"
+#include "render/render.h"
+#include "render/simple_rp.h"
 #include "spdlog/spdlog.h"
+#include "utility/window.h"
+
 
 int main(int arch, const char** argv) {
     sid::OpenGLSupport::LoadCore();
@@ -50,10 +50,29 @@ int main(int arch, const char** argv) {
 
     auto model = sid::make_model();
     model->LoadData("axe.obj");
-    model_rp->SetModel(model);
+    model->SetRotation(0.0, 0.0, 90.0);
+
+    auto second_model = sid::make_model();
+    second_model->LoadData("axe.obj");
+    second_model->SetRotation(0.0, 0.0, -90.0);
+    second_model->SetPosition(0.0, 0.1, 0.0);
+
+    auto camera = std::make_shared<sid::Camera>();
+    camera->SetPosition(0.0, 0.0, -0.5);
+    model_rp->SetCamera(camera);
+
+    auto scene = std::make_shared<sid::Scene>();
+
+    scene->AddModel(model);
+    scene->AddModel(second_model);
+
+    model_rp->SetScene(scene);
+
+    auto simple_rp = std::make_shared<sid::SimpleRenderPass>();
 
     // Add render passes to the renderer
     sid::Render render;
+    // render.AddPass(simple_rp);
     render.AddPass(model_rp);
     render.AddPass(gui_pass);
 
