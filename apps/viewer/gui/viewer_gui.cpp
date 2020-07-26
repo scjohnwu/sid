@@ -4,6 +4,10 @@
 namespace game {
     void ViewerGUI::Draw() {
         using namespace ImGui;
-        ImGui::ShowDemoWindow();
+        Begin("Model stats", &m_IsShowing);
+        Text("Filename:");
+        
+
+        End();
     }
 }

@@ -12,7 +12,7 @@
 int main(int arch, const char** argv) {
     sid::OpenGLSupport::LoadCore();
 
-    sid::Window window(1280, 720, "Shooting in the dark");
+    sid::Window window(1280, 720, "Model Viewer");
 
     if (!window.IsValid()) {
         spdlog::critical("Could not create window");

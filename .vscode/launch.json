@@ -51,7 +51,7 @@
       "description": "App to debug",
       // Add your app names here
       "options": [
-        "game"
+        "viewer"
       ]
     }
   ]

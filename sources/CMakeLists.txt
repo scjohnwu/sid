@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(sample_lib)
+project(engine)
 
 include_directories(${CMAKE_SOURCE_DIR}/sources ${CMAKE_SOURCE_DIR}/includes)
 
@@ -19,13 +19,13 @@ aux_source_directory(gui GUISources)
 aux_source_directory(render RenderSources)
 aux_source_directory(scene SceneSources)
 
-add_library(game_lib 
+add_library(engine_lib 
             ${UtilitySources} 
             ${GUISources}
             ${RenderSources}
             ${SceneSources})
 
-target_link_libraries(game_lib 
+target_link_libraries(engine_lib 
                       ${OPENGL_LIBRARIES} 
                       spdlog::spdlog 
                       globjects::globjects 
