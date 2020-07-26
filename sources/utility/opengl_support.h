@@ -4,6 +4,8 @@
 #include "glbinding/gl43core/gl.h"
 #include "glbinding/glbinding.h"
 
+#define GLOBJECTS_STATIC_DEFINE
+
 // globjects imports, used for aliases
 #include "globjects/Program.h"
 #include "globjects/Shader.h"
