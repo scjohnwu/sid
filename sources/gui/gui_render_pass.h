@@ -5,7 +5,7 @@
 // UI library
 #include "imgui.h"
 
-#include "gui_layout.h"
+#include "gui_panel.h"
 
 #include <array>
 
@@ -17,7 +17,7 @@ class GUIRenderPass : public sid::RenderPass {
     void Init(GLFWwindow* window);
     void Draw() override;
 
-    void SetLayout(GUILayoutPtr layout);
+    void AddPanel(GUIPanelPtr panel);
 
    private:
     void InitFontTexture();
@@ -50,14 +50,10 @@ class GUIRenderPass : public sid::RenderPass {
     sid::StatePtr m_PrevState;
     sid::StatePtr m_GUIState;
 
-    gl::GLuint m_RawVBO{0};
-    gl::GLuint m_RawEBO{0};
-    gl::GLuint m_RawVAO{0};
+    std::vector<GUIPanelPtr> m_Panels;
 
     sid::TexturePtr m_Texture;
     double m_TimeGlobal{0.0};
-
-    GUILayoutPtr m_Layout;
 
     GLFWwindow* m_Window{nullptr};
 };

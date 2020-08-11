@@ -27,7 +27,7 @@ void GUIRenderPass::Init(GLFWwindow* window) {
     m_Window = window;
 }
 
-void GUIRenderPass::SetLayout(GUILayoutPtr layout) { m_Layout = layout; }
+void GUIRenderPass::AddPanel(GUIPanelPtr panel) { m_Panels.push_back(panel); }
 
 void GUIRenderPass::UpdateUIClock() {
     ImGuiIO& io = ImGui::GetIO();
@@ -56,8 +56,13 @@ void GUIRenderPass::Draw() {
 
     ImGui::NewFrame();
 
-    if (m_Layout != nullptr) {
-        m_Layout->Draw();
+    for(auto& panel: m_Panels) {
+        auto is_visible = panel->IsVisible();
+        auto name = panel->GetName();
+        auto flags = panel->GetFlags();
+        ImGui::Begin(name, is_visible, flags);
+        panel->Draw();
+        ImGui::End();
     }
 
     ImGui::Render();

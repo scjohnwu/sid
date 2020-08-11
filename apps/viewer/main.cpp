@@ -1,7 +1,7 @@
 #include "gui/controls.h"
 #include "gui/gui_render_pass.h"
 #include "gui/imgui_support.h"
-#include "gui/viewer_gui.h"
+#include "gui/viewer_panel.h"
 #include "render/model_rp.h"
 #include "render/render.h"
 #include "render/simple_rp.h"
@@ -37,23 +37,27 @@ int main(int arch, const char** argv) {
     controls.Init(&window);
 
     // Setup GUI render pass
-    auto layout = std::make_shared<game::ViewerGUI>();
+    auto mv = std::make_shared<viewer::ViewerModel>();
+    auto panel = std::make_shared<viewer::ViewerPanel>();
+    panel->SetModel(mv);
     auto gui_pass = std::make_shared<sid::GUIRenderPass>();
     gui_pass->Init(window.get());
 
+    mv->model_file = "axe.obj";
+
     // Must be added last!
-    gui_pass->SetLayout(layout);
+    gui_pass->AddPanel(panel);
 
     // Setup sample render pass
     auto model_rp = std::make_shared<sid::ModelRenderPass>();
     model_rp->Init();
 
     auto model = sid::make_model();
-    model->LoadData("axe.obj");
+    model->LoadData(mv->model_file);
     model->SetRotation(0.0, 0.0, 90.0);
 
     auto second_model = sid::make_model();
-    second_model->LoadData("axe.obj");
+    second_model->LoadData(mv->model_file);
     second_model->SetRotation(0.0f, 0.0f, -90.0f);
     second_model->SetPosition(0.0f, 0.1f, 0.0f);
 
